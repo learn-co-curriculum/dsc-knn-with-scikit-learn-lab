@@ -13,7 +13,7 @@ You will be able to:
 * Perform a parameter search for 'k' to optimize model performance
 * Evaluate model performance and interpret results
 
-### Getting Started
+## Getting Started
 
 In this lab, we'll make use of sklearn's implementation of the **_K-Nearest Neighbors_** algorithm. We'll use it to make predictions on the Titanic dataset. 
 
@@ -27,7 +27,7 @@ You'll find the titanic dataset stored in the `titanic.csv` file. In the cell be
 
 Great! Now, we'll preprocess our data to get it ready for use with a KNN classifier.
 
-### Preprocessing Our Data
+## Preprocessing Our Data
 
 This stage should be pretty familiar to you by now. Although it's not the fun part of machine learning, it's good practice to get used to it.  Although it isn't as fun or exciting as training machine learning algorithms, it's a very large, very important part of the Data Science Process. As a Data Scientist, you'll often spend the majority of your time wrangling and preprocessing, just to get it ready for use with supervised learning algorithms. 
 
@@ -43,7 +43,7 @@ In the cells below, complete the following steps:
 4. One-Hot Encode categorical columns such as `Embarked`.
 5. Store our target column, `Survived`, in a separate variable and remove it from the DataFrame. 
 
-### Normalizing Our Data
+## Normalizing Our Data
 
 Good job preprocessing our data! This can seem tedious, but its a very important foundational skill in any Data Science toolbox. The final step we we'll take in our preprocessing efforts is to **_Normalize_** our data. Recall that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of our data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
 
@@ -80,7 +80,7 @@ In the cell below:
 * Import `train_test_split` from the `sklearn.model_selection` module
 * Use `train_test_split` to split our data into training and testing sets, with a `test_size` of `0.25`.
 
-### Creating and Fitting our KNN Model
+## Creating and Fitting our KNN Model
 
 Now that we've preprocessed our data successfully, it's time for the fun stuff--let's create a KNN classifier and use it to make predictions on our dataset!  Since you've got some experience on this part from when we built our own model, we won't hold your hand through section. 
 
@@ -113,7 +113,7 @@ ________________________________________________________________________________
 
 
 
-### Improving Model Performance
+## Improving Model Performance
 
 Our overall model results are better than random chance, but not by a large margin. For the remainder of this notebook, we'll focus on improving model performance. This is also a big part of the Data Science Process--your first fit is almost never your best. Modeling is an **_iterative process_**, meaning that we should make small incremental changes to our model and use our intuition to see if we can improve the overall performance. 
 
@@ -152,9 +152,13 @@ find_best_k(X_train, y_train, X_test, y_test)
 
 We improved our model performance by over 4 percent just by finding an optimal value for k. Good job! There are other parameters in the model that you can also tune. In a later section, we'll cover how we can automate the parameter search process using a technique called **_Grid Search_**. For, try playing around with the different options for parameters, and seeing how it affects model performance. For a full list of model parameters, see the [sklearn documentation !](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
 
-### (Optional) Level Up: Iterating on the Data
+## (Optional) Level Up: Iterating on the Data
 
 As an optional (but recommended!) exercise, think about the decisions we made during the preprocessing steps that could have affected our overall model performance. For instance, we replaced missing age values with the column median. Could this have affected ourn overall performance? How might the model have fared if we had just dropped those rows, instead of using the column median? What if we reduced dimensionality by ignoring some less important columns altogether?
 
 In the cells below, revisit your preprocessing stage and see if you can improve the overall results of the classifier by doing things differently. Perhaps you should consider dropping certain columns, or dealing with null values differently, or even using a different sort of scaling (or none at all!). Try a few different iterations on the preprocessing and see how it affects the overall performance of the model. The `find_best_k` function handles all of the fitting--use this to iterate quickly as you try different strategies for dealing with data preprocessing! 
 
+
+## Summary
+
+Good job! This concludes today's section!
