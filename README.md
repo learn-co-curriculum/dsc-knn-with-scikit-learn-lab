@@ -1,5 +1,5 @@
 
-# KNN with sklearn - Lab
+# KNN with Scikit-learn - Lab
 
 ## Introduction
 
