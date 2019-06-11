@@ -1,9 +1,9 @@
 
-# KNN with sklearn - Lab
+# KNN with scikit-learn - Lab
 
 ## Introduction
 
-In this lab, you'll learn how to use sci-kit learn's implementation of a KNN classifier on the classic Titanic dataset from Kaggle!
+In this lab, you'll learn how to use scikit-learn's implementation of a KNN classifier on the classic Titanic dataset from Kaggle!
 
 ## Objectives
 
@@ -54,31 +54,6 @@ In the cells below, complete the following steps:
 4. One-Hot Encode categorical columns such as `Embarked`.
 5. Store the target column, `Survived`, in a separate variable and remove it from the DataFrame. 
 
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
 ## Normalizing the Data
 
 The final step in your preprocessing efforts for this lab is to **_normalize_** the data. Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
@@ -115,11 +90,6 @@ In the cell below:
 
 * Import `train_test_split` from the `sklearn.model_selection` module
 * Use `train_test_split` to split thr data into training and testing sets, with a `test_size` of `0.25`.
-
-
-```python
-
-```
 
 ## Fitting a KNN Model
 
@@ -207,7 +177,7 @@ find_best_k(X_train, y_train, X_test, y_test)
 # F1-Score: 0.6444444444444444
 ```
 
-If all went well, you'll notice that model performance has improved by over 4 percent by finding an optimal value for k. For further tuning, you can use sci-kit learn's built in **Grid Search** to perform a similar exhaustive check of hyper-parameter combinations and fine tune model performance. For a full list of model parameters, see the [sklearn documentation !](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
+If all went well, you'll notice that model performance has improved by over 4 percent by finding an optimal value for k. For further tuning, you can use scikit-learn's built in **Grid Search** to perform a similar exhaustive check of hyper-parameter combinations and fine tune model performance. For a full list of model parameters, see the [sklearn documentation !](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
 
 ## (Optional) Level Up: Iterating on the Data
 
@@ -216,31 +186,6 @@ As an optional (but recommended!) exercise, think about the decisions you made d
 In the cells below, revisit your preprocessing stage and see if you can improve the overall results of the classifier by doing things differently.Consider dropping certain columns, dealing with null values differently, or using an alternative scaling function. Then see how these different preprocessing techniques affect the performance of the model. Remember that the `find_best_k` function handles all of the fitting&mdash;use this to iterate quickly as you try different strategies for dealing with data preprocessing! 
 
 
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
 ## Summary
 
-Well done! In this lab, you worked with the classic titanic dataset and practiced fitting and tuning KNN classification models using sci-kit learn! As always, this gave you another opportunity to continue practicing your data wrangling skills and model tuning skills using pandas and sci-kit learn!
+Well done! In this lab, you worked with the classic titanic dataset and practiced fitting and tuning KNN classification models using scikit-learn! As always, this gave you another opportunity to continue practicing your data wrangling skills and model tuning skills using pandas and sci-kit learn!
