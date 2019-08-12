@@ -585,7 +585,7 @@ X_train, X_test, y_train, y_test = train_test_split(one_hot_df, labels, test_siz
 
 The final step in your preprocessing efforts for this lab is to **_normalize_** the data. We normalize **after** splitting our data into training and testing sets. This is to avoid information "leaking" from our test set into our training set. (Read more about data leakage [here](https://machinelearningmastery.com/data-leakage-machine-learning/) ) Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
 
-Since KNN is a distance-based classifier, if data is different scales, then larger scaled features would have a larger impact on the distance between points.
+Since KNN is a distance-based classifier, if data is in different scales, then larger scaled features have a larger impact on the distance between points.
 
 To scale your data, use the `StandardScaler` object found inside the `sklearn.preprocessing` module. 
 
@@ -602,10 +602,11 @@ In the cell below:
 # Dont forget to import the necessary packages!
 
 scaler = None
-scaled_data = None
+scaled_data_train = None
+scaled_data_test = None
 
-scaled_df = None
-scaled_df.head()
+scaled_df_train = None
+scaled_df_train.head()
 ```
 
 
@@ -620,14 +621,6 @@ scaled_data_test = scaler.transform(X_test)
 scaled_df_train = pd.DataFrame(scaled_data_train, columns=one_hot_df.columns)
 scaled_df_train.head()
 ```
-
-    /Users/vpatel2/anaconda3/lib/python3.7/site-packages/sklearn/preprocessing/data.py:645: DataConversionWarning: Data with input dtype uint8, int64, float64 were all converted to float64 by StandardScaler.
-      return self.partial_fit(X, y)
-    /Users/vpatel2/anaconda3/lib/python3.7/site-packages/sklearn/base.py:464: DataConversionWarning: Data with input dtype uint8, int64, float64 were all converted to float64 by StandardScaler.
-      return self.fit(X, **fit_params).transform(X)
-    /Users/vpatel2/anaconda3/lib/python3.7/site-packages/ipykernel_launcher.py:6: DataConversionWarning: Data with input dtype uint8, int64, float64 were all converted to float64 by StandardScaler.
-      
-
 
 
 
@@ -664,63 +657,63 @@ scaled_df_train.head()
   <tbody>
     <tr>
       <th>0</th>
-      <td>-1.572805</td>
-      <td>0.765320</td>
-      <td>-0.100154</td>
-      <td>-0.480433</td>
-      <td>-0.481959</td>
-      <td>-0.057557</td>
-      <td>-0.478312</td>
-      <td>-0.30886</td>
-      <td>0.613215</td>
+      <td>-0.391976</td>
+      <td>0.72149</td>
+      <td>-0.660703</td>
+      <td>0.420146</td>
+      <td>-0.467875</td>
+      <td>-0.420520</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>0.818720</td>
-      <td>-1.306643</td>
-      <td>1.428550</td>
-      <td>0.379697</td>
-      <td>3.071374</td>
-      <td>0.015975</td>
-      <td>-0.478312</td>
-      <td>-0.30886</td>
-      <td>0.613215</td>
+      <td>-1.600570</td>
+      <td>0.72149</td>
+      <td>1.927043</td>
+      <td>-0.459782</td>
+      <td>0.875249</td>
+      <td>1.009314</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.818720</td>
-      <td>0.765320</td>
-      <td>1.657856</td>
-      <td>-0.480433</td>
-      <td>-0.481959</td>
-      <td>-0.489265</td>
-      <td>-0.478312</td>
-      <td>-0.30886</td>
-      <td>0.613215</td>
+      <td>-0.391976</td>
+      <td>-1.38602</td>
+      <td>-0.111787</td>
+      <td>0.420146</td>
+      <td>-0.467875</td>
+      <td>-0.148843</td>
+      <td>2.155010</td>
+      <td>-0.300027</td>
+      <td>-1.688109</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>-1.572805</td>
-      <td>0.765320</td>
-      <td>1.275680</td>
-      <td>-0.480433</td>
-      <td>-0.481959</td>
-      <td>0.866581</td>
-      <td>2.090686</td>
-      <td>-0.30886</td>
-      <td>-1.630748</td>
+      <td>-0.391976</td>
+      <td>-1.38602</td>
+      <td>-0.817536</td>
+      <td>0.420146</td>
+      <td>-0.467875</td>
+      <td>-0.105375</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.818720</td>
-      <td>-1.306643</td>
-      <td>-0.100154</td>
-      <td>0.379697</td>
-      <td>1.886930</td>
-      <td>-0.191339</td>
-      <td>-0.478312</td>
-      <td>-0.30886</td>
-      <td>0.613215</td>
+      <td>0.816618</td>
+      <td>0.72149</td>
+      <td>-0.660703</td>
+      <td>-0.459782</td>
+      <td>-0.467875</td>
+      <td>-0.512890</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
   </tbody>
 </table>
@@ -800,10 +793,10 @@ def print_metrics(labels, preds):
 print_metrics(y_test, test_preds)
 ```
 
-    Precision Score: 0.675
-    Recall Score: 0.7297297297297297
-    Accuracy Score: 0.7937219730941704
-    F1 Score: 0.7012987012987014
+    Precision Score: 0.7096774193548387
+    Recall Score: 0.7415730337078652
+    Accuracy Score: 0.7757847533632287
+    F1 Score: 0.7252747252747254
 
 
 > **_Analysis_** Interpret each of the metrics above, and explain what they tell you about your model's capabilities. If you had to pick one score to best describe the performance of the model, which would you choose? Explain your answer.
@@ -901,12 +894,6 @@ As an optional (but recommended!) exercise, think about the decisions you made d
 
 In the cells below, revisit your preprocessing stage and see if you can improve the overall results of the classifier by doing things differently.Consider dropping certain columns, dealing with null values differently, or using an alternative scaling function. Then see how these different preprocessing techniques affect the performance of the model. Remember that the `find_best_k` function handles all of the fitting&mdash;use this to iterate quickly as you try different strategies for dealing with data preprocessing! 
 
-
-
-```python
-# __SOLUTION__ 
-
-```
 
 
 ```python
