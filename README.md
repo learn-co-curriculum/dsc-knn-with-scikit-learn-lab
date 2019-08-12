@@ -548,19 +548,36 @@ labels = one_hot_df.Survived
 one_hot_df.drop('Survived', axis=1, inplace=True)
 ```
 
+#### Creating Training and Testing Sets
+
+Now that you've preprocessed the data, we need to split our data into training and testing sets. 
+
+In the cell below:
+
+* Import `train_test_split` from the `sklearn.model_selection` module
+* Use `train_test_split` to split thr data into training and testing sets, with a `test_size` of `0.25`.
+
+
+```python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(one_hot_df, labels, test_size=0.25)
+```
+
 ## Normalizing the Data
 
-The final step in your preprocessing efforts for this lab is to **_normalize_** the data. Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
+The final step in your preprocessing efforts for this lab is to **_normalize_** the data. We normalize **after** splitting our data into training and testing sets. This is to avoid information "leaking" from our test set into our training set. (Read more about data leakage [here](https://machinelearningmastery.com/data-leakage-machine-learning/) ) Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
 
-Since KNN is a distance-based classifier, if data is different scales, then larger scaled features would have a larger impact on the distance between points.
+Since KNN is a distance-based classifier, if data is in different scales, then larger scaled features have a larger impact on the distance between points.
 
 To scale your data, use the `StandardScaler` object found inside the `sklearn.preprocessing` module. 
 
 In the cell below:
 
 * Import and instantiate a `StandardScaler` object. 
-* Use the scaler's `.fit_transform()` method to create a scaled version of our dataset. 
-* The result returned by the `fit_transform` call will be a numpy array, not a pandas DataFrame. Create a new pandas DataFrame out of this object called `scaled_df`. To set the column names back to their original state, set the `columns` parameter to `one_hot_df.columns`.
+* Use the scaler's `.fit_transform()` method to create a scaled version of our training dataset. 
+* Use the scaler's `.transform()` method to create a scaled version of our testing dataset. 
+* The result returned by the `fit_transform` and `transform` calls will be numpy arrays, not a pandas DataFrame. Create a new pandas DataFrame out of this object called `scaled_df`. To set the column names back to their original state, set the `columns` parameter to `one_hot_df.columns`.
 * Print out the head of `scaled_df` to ensure everything worked correctly.
 
 
@@ -568,10 +585,11 @@ In the cell below:
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
-scaled_data = scaler.fit_transform(one_hot_df)
+scaled_data_train = scaler.fit_transform(X_train)
+scaled_data_test = scaler.transform(X_test)
 
-scaled_df = pd.DataFrame(scaled_data, columns=one_hot_df.columns)
-scaled_df.head()
+scaled_df_train = pd.DataFrame(scaled_data_train, columns=one_hot_df.columns)
+scaled_df_train.head()
 ```
 
 
@@ -609,63 +627,63 @@ scaled_df.head()
   <tbody>
     <tr>
       <th>0</th>
-      <td>0.825209</td>
-      <td>0.735342</td>
-      <td>-0.563674</td>
-      <td>0.431350</td>
-      <td>-0.474326</td>
-      <td>-0.500240</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>-0.391976</td>
+      <td>0.72149</td>
+      <td>-0.660703</td>
+      <td>0.420146</td>
+      <td>-0.467875</td>
+      <td>-0.420520</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>-1.572211</td>
-      <td>-1.359911</td>
-      <td>0.669217</td>
-      <td>0.431350</td>
-      <td>-0.474326</td>
-      <td>0.788947</td>
-      <td>2.071634</td>
-      <td>-0.307941</td>
-      <td>-1.621287</td>
+      <td>-1.600570</td>
+      <td>0.72149</td>
+      <td>1.927043</td>
+      <td>-0.459782</td>
+      <td>0.875249</td>
+      <td>1.009314</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.825209</td>
-      <td>-1.359911</td>
-      <td>-0.255451</td>
-      <td>-0.475199</td>
-      <td>-0.474326</td>
-      <td>-0.486650</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>-0.391976</td>
+      <td>-1.38602</td>
+      <td>-0.111787</td>
+      <td>0.420146</td>
+      <td>-0.467875</td>
+      <td>-0.148843</td>
+      <td>2.155010</td>
+      <td>-0.300027</td>
+      <td>-1.688109</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>-1.572211</td>
-      <td>-1.359911</td>
-      <td>0.438050</td>
-      <td>0.431350</td>
-      <td>-0.474326</td>
-      <td>0.422861</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>-0.391976</td>
+      <td>-1.38602</td>
+      <td>-0.817536</td>
+      <td>0.420146</td>
+      <td>-0.467875</td>
+      <td>-0.105375</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.825209</td>
-      <td>0.735342</td>
-      <td>0.438050</td>
-      <td>-0.475199</td>
-      <td>-0.474326</td>
-      <td>-0.484133</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>0.816618</td>
+      <td>0.72149</td>
+      <td>-0.660703</td>
+      <td>-0.459782</td>
+      <td>-0.467875</td>
+      <td>-0.512890</td>
+      <td>-0.464035</td>
+      <td>-0.300027</td>
+      <td>0.592379</td>
     </tr>
   </tbody>
 </table>
@@ -673,23 +691,7 @@ scaled_df.head()
 
 
 
-You may have noticed that the scaler also scaled our binary/one-hot encoded columns, too! Although it doesn't look as pretty, this has no negative effect on the model. Each 1 and 0 have been replaced with corresponding decimal values, but each binary column still only contains 2 values, meaning the overall information content of each column has not changed. 
-
-#### Creating Training and Testing Sets
-
-Now that you've preprocessed the data, the only step remaining is to split our data into training and testing sets. 
-
-In the cell below:
-
-* Import `train_test_split` from the `sklearn.model_selection` module
-* Use `train_test_split` to split thr data into training and testing sets, with a `test_size` of `0.25`.
-
-
-```python
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test = train_test_split(one_hot_df, labels, test_size=0.25)
-```
+You may have noticed that the scaler also scaled our binary/one-hot encoded columns, too! Although it doesn't look as pretty, this has no negative effect on the model. Each 1 and 0 have been replaced with corresponding decimal values, but each binary column still only contains 2 values, meaning the overall information content of each column has not changed.
 
 ## Fitting a KNN Model
 
@@ -706,8 +708,8 @@ In the cells below:
 ```python
 from sklearn.neighbors import KNeighborsClassifier
 clf1 = KNeighborsClassifier()
-clf1.fit(X_train, y_train)
-test_preds = clf1.predict(X_test)
+clf1.fit(scaled_data_train, y_train)
+test_preds = clf1.predict(scaled_data_test)
 ```
 
 Now, in the cells below, import all the necessary evaluation metrics from `sklearn.metrics` and complete the `print_metrics()` function so that it prints out **_Precision, Recall, Accuracy,_** and **_F1-Score_** when given a set of `labels` (the true values) and `preds` (the models predictions). 
@@ -730,10 +732,10 @@ def print_metrics(labels, preds):
 print_metrics(y_test, test_preds)
 ```
 
-    Precision Score: 0.5934065934065934
-    Recall Score: 0.6136363636363636
-    Accuracy Score: 0.6816143497757847
-    F1 Score: 0.6033519553072626
+    Precision Score: 0.7096774193548387
+    Recall Score: 0.7415730337078652
+    Accuracy Score: 0.7757847533632287
+    F1 Score: 0.7252747252747254
 
 
 > **_Analysis_** Interpret each of the metrics above, and explain what they tell you about your model's capabilities. If you had to pick one score to best describe the performance of the model, which would you choose? Explain your answer.
@@ -789,15 +791,15 @@ def find_best_k(X_train, y_train, X_test, y_test, min_k=1, max_k=25):
 
 
 ```python
-find_best_k(X_train, y_train, X_test, y_test)
+find_best_k(scaled_data_train, y_train, scaled_data_test, y_test)
 # Expected Output:
 
-# Best Value for k: 3
-# F1-Score: 0.6444444444444444
+# Best Value for k: 9
+# F1-Score: 0.7435897435897435
 ```
 
-    Best Value for k: 3
-    F1-Score: 0.6444444444444444
+    Best Value for k: 9
+    F1-Score: 0.7435897435897435
 
 
 If all went well, you'll notice that model performance has improved by over 4 percent by finding an optimal value for k. For further tuning, you can use scikit-learn's built in **Grid Search** to perform a similar exhaustive check of hyper-parameter combinations and fine tune model performance. For a full list of model parameters, see the [sklearn documentation !](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
