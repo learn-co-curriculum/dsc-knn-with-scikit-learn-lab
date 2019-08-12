@@ -54,19 +54,29 @@ In the cells below, complete the following steps:
 4. One-Hot Encode categorical columns such as `Embarked`.
 5. Store the target column, `Survived`, in a separate variable and remove it from the DataFrame. 
 
+#### Creating Training and Testing Sets
+
+Now that you've preprocessed the data, we need to split our data into training and testing sets. 
+
+In the cell below:
+
+* Import `train_test_split` from the `sklearn.model_selection` module
+* Use `train_test_split` to split thr data into training and testing sets, with a `test_size` of `0.25`.
+
 ## Normalizing the Data
 
-The final step in your preprocessing efforts for this lab is to **_normalize_** the data. Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
+The final step in your preprocessing efforts for this lab is to **_normalize_** the data. We normalize **after** splitting our data into training and testing sets. This is to avoid information "leaking" from our test set into our training set. (Read more about data leakage [here](https://machinelearningmastery.com/data-leakage-machine-learning/) ) Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
 
-Since KNN is a distance-based classifier, if data is different scales, then larger scaled features would have a larger impact on the distance between points.
+Since KNN is a distance-based classifier, if data is in different scales, then larger scaled features have a larger impact on the distance between points.
 
 To scale your data, use the `StandardScaler` object found inside the `sklearn.preprocessing` module. 
 
 In the cell below:
 
 * Import and instantiate a `StandardScaler` object. 
-* Use the scaler's `.fit_transform()` method to create a scaled version of our dataset. 
-* The result returned by the `fit_transform` call will be a numpy array, not a pandas DataFrame. Create a new pandas DataFrame out of this object called `scaled_df`. To set the column names back to their original state, set the `columns` parameter to `one_hot_df.columns`.
+* Use the scaler's `.fit_transform()` method to create a scaled version of our training dataset. 
+* Use the scaler's `.transform()` method to create a scaled version of our testing dataset. 
+* The result returned by the `fit_transform` and `transform` calls will be numpy arrays, not a pandas DataFrame. Create a new pandas DataFrame out of this object called `scaled_df`. To set the column names back to their original state, set the `columns` parameter to `one_hot_df.columns`.
 * Print out the head of `scaled_df` to ensure everything worked correctly.
 
 
@@ -74,22 +84,14 @@ In the cell below:
 # Dont forget to import the necessary packages!
 
 scaler = None
-scaled_data = None
+scaled_data_train = None
+scaled_data_test = None
 
-scaled_df = None
-scaled_df.head()
+scaled_df_train = None
+scaled_df_train.head()
 ```
 
-You may have noticed that the scaler also scaled our binary/one-hot encoded columns, too! Although it doesn't look as pretty, this has no negative effect on the model. Each 1 and 0 have been replaced with corresponding decimal values, but each binary column still only contains 2 values, meaning the overall information content of each column has not changed. 
-
-#### Creating Training and Testing Sets
-
-Now that you've preprocessed the data, the only step remaining is to split our data into training and testing sets. 
-
-In the cell below:
-
-* Import `train_test_split` from the `sklearn.model_selection` module
-* Use `train_test_split` to split thr data into training and testing sets, with a `test_size` of `0.25`.
+You may have noticed that the scaler also scaled our binary/one-hot encoded columns, too! Although it doesn't look as pretty, this has no negative effect on the model. Each 1 and 0 have been replaced with corresponding decimal values, but each binary column still only contains 2 values, meaning the overall information content of each column has not changed.
 
 ## Fitting a KNN Model
 
@@ -127,6 +129,12 @@ def print_metrics(labels, preds):
     
 print_metrics(y_test, test_preds)
 ```
+
+    Precision Score: None
+    Recall Score: None
+    Accuracy Score: None
+    F1 Score: None
+
 
 > **_Analysis_** Interpret each of the metrics above, and explain what they tell you about your model's capabilities. If you had to pick one score to best describe the performance of the model, which would you choose? Explain your answer.
 
@@ -170,12 +178,16 @@ def find_best_k(X_train, y_train, X_test, y_test, min_k=1, max_k=25):
 
 
 ```python
-find_best_k(X_train, y_train, X_test, y_test)
+find_best_k(scaled_data_train, y_train, scaled_data_test, y_test)
 # Expected Output:
 
-# Best Value for k: 3
-# F1-Score: 0.6444444444444444
+# Best Value for k: 9
+# F1-Score: 0.7435897435897435
 ```
+
+    Best Value for k: 9
+    F1-Score: 0.7435897435897435
+
 
 If all went well, you'll notice that model performance has improved by over 4 percent by finding an optimal value for k. For further tuning, you can use scikit-learn's built in **Grid Search** to perform a similar exhaustive check of hyper-parameter combinations and fine tune model performance. For a full list of model parameters, see the [sklearn documentation !](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
 
