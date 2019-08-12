@@ -182,31 +182,6 @@ In the cells below, complete the following steps:
 
 
 ```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
 # __SOLUTION__ 
 df = raw_df.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1, inplace=False)
 df.head()
@@ -589,9 +564,26 @@ labels = one_hot_df.Survived
 one_hot_df.drop('Survived', axis=1, inplace=True)
 ```
 
+#### Creating Training and Testing Sets
+
+Now that you've preprocessed the data, we need to split our data into training and testing sets. 
+
+In the cell below:
+
+* Import `train_test_split` from the `sklearn.model_selection` module
+* Use `train_test_split` to split thr data into training and testing sets, with a `test_size` of `0.25`.
+
+
+```python
+# __SOLUTION__ 
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(one_hot_df, labels, test_size=0.25)
+```
+
 ## Normalizing the Data
 
-The final step in your preprocessing efforts for this lab is to **_normalize_** the data. Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
+The final step in your preprocessing efforts for this lab is to **_normalize_** the data. We normalize **after** splitting our data into training and testing sets. This is to avoid information "leaking" from our test set into our training set. (Read more about data leakage [here](https://machinelearningmastery.com/data-leakage-machine-learning/) ) Remember that normalization (also sometimes called **_Standardization_** or **_Scaling_**) means making sure that all of your data is represented at the same scale.  The most common way to do this is to convert all numerical values to z-scores. 
 
 Since KNN is a distance-based classifier, if data is different scales, then larger scaled features would have a larger impact on the distance between points.
 
@@ -600,8 +592,9 @@ To scale your data, use the `StandardScaler` object found inside the `sklearn.pr
 In the cell below:
 
 * Import and instantiate a `StandardScaler` object. 
-* Use the scaler's `.fit_transform()` method to create a scaled version of our dataset. 
-* The result returned by the `fit_transform` call will be a numpy array, not a pandas DataFrame. Create a new pandas DataFrame out of this object called `scaled_df`. To set the column names back to their original state, set the `columns` parameter to `one_hot_df.columns`.
+* Use the scaler's `.fit_transform()` method to create a scaled version of our training dataset. 
+* Use the scaler's `.transform()` method to create a scaled version of our testing dataset. 
+* The result returned by the `fit_transform` and `transform` calls will be numpy arrays, not a pandas DataFrame. Create a new pandas DataFrame out of this object called `scaled_df`. To set the column names back to their original state, set the `columns` parameter to `one_hot_df.columns`.
 * Print out the head of `scaled_df` to ensure everything worked correctly.
 
 
@@ -621,11 +614,20 @@ scaled_df.head()
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
-scaled_data = scaler.fit_transform(one_hot_df)
+scaled_data_train = scaler.fit_transform(X_train)
+scaled_data_test = scaler.transform(X_test)
 
-scaled_df = pd.DataFrame(scaled_data, columns=one_hot_df.columns)
-scaled_df.head()
+scaled_df_train = pd.DataFrame(scaled_data_train, columns=one_hot_df.columns)
+scaled_df_train.head()
 ```
+
+    /Users/vpatel2/anaconda3/lib/python3.7/site-packages/sklearn/preprocessing/data.py:645: DataConversionWarning: Data with input dtype uint8, int64, float64 were all converted to float64 by StandardScaler.
+      return self.partial_fit(X, y)
+    /Users/vpatel2/anaconda3/lib/python3.7/site-packages/sklearn/base.py:464: DataConversionWarning: Data with input dtype uint8, int64, float64 were all converted to float64 by StandardScaler.
+      return self.fit(X, **fit_params).transform(X)
+    /Users/vpatel2/anaconda3/lib/python3.7/site-packages/ipykernel_launcher.py:6: DataConversionWarning: Data with input dtype uint8, int64, float64 were all converted to float64 by StandardScaler.
+      
+
 
 
 
@@ -662,63 +664,63 @@ scaled_df.head()
   <tbody>
     <tr>
       <th>0</th>
-      <td>0.825209</td>
-      <td>0.735342</td>
-      <td>-0.563674</td>
-      <td>0.431350</td>
-      <td>-0.474326</td>
-      <td>-0.500240</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>-1.572805</td>
+      <td>0.765320</td>
+      <td>-0.100154</td>
+      <td>-0.480433</td>
+      <td>-0.481959</td>
+      <td>-0.057557</td>
+      <td>-0.478312</td>
+      <td>-0.30886</td>
+      <td>0.613215</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>-1.572211</td>
-      <td>-1.359911</td>
-      <td>0.669217</td>
-      <td>0.431350</td>
-      <td>-0.474326</td>
-      <td>0.788947</td>
-      <td>2.071634</td>
-      <td>-0.307941</td>
-      <td>-1.621287</td>
+      <td>0.818720</td>
+      <td>-1.306643</td>
+      <td>1.428550</td>
+      <td>0.379697</td>
+      <td>3.071374</td>
+      <td>0.015975</td>
+      <td>-0.478312</td>
+      <td>-0.30886</td>
+      <td>0.613215</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.825209</td>
-      <td>-1.359911</td>
-      <td>-0.255451</td>
-      <td>-0.475199</td>
-      <td>-0.474326</td>
-      <td>-0.486650</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>0.818720</td>
+      <td>0.765320</td>
+      <td>1.657856</td>
+      <td>-0.480433</td>
+      <td>-0.481959</td>
+      <td>-0.489265</td>
+      <td>-0.478312</td>
+      <td>-0.30886</td>
+      <td>0.613215</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>-1.572211</td>
-      <td>-1.359911</td>
-      <td>0.438050</td>
-      <td>0.431350</td>
-      <td>-0.474326</td>
-      <td>0.422861</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>-1.572805</td>
+      <td>0.765320</td>
+      <td>1.275680</td>
+      <td>-0.480433</td>
+      <td>-0.481959</td>
+      <td>0.866581</td>
+      <td>2.090686</td>
+      <td>-0.30886</td>
+      <td>-1.630748</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.825209</td>
-      <td>0.735342</td>
-      <td>0.438050</td>
-      <td>-0.475199</td>
-      <td>-0.474326</td>
-      <td>-0.484133</td>
-      <td>-0.482711</td>
-      <td>-0.307941</td>
-      <td>0.616794</td>
+      <td>0.818720</td>
+      <td>-1.306643</td>
+      <td>-0.100154</td>
+      <td>0.379697</td>
+      <td>1.886930</td>
+      <td>-0.191339</td>
+      <td>-0.478312</td>
+      <td>-0.30886</td>
+      <td>0.613215</td>
     </tr>
   </tbody>
 </table>
@@ -726,29 +728,7 @@ scaled_df.head()
 
 
 
-You may have noticed that the scaler also scaled our binary/one-hot encoded columns, too! Although it doesn't look as pretty, this has no negative effect on the model. Each 1 and 0 have been replaced with corresponding decimal values, but each binary column still only contains 2 values, meaning the overall information content of each column has not changed. 
-
-#### Creating Training and Testing Sets
-
-Now that you've preprocessed the data, the only step remaining is to split our data into training and testing sets. 
-
-In the cell below:
-
-* Import `train_test_split` from the `sklearn.model_selection` module
-* Use `train_test_split` to split thr data into training and testing sets, with a `test_size` of `0.25`.
-
-
-```python
-
-```
-
-
-```python
-# __SOLUTION__ 
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test = train_test_split(one_hot_df, labels, test_size=0.25)
-```
+You may have noticed that the scaler also scaled our binary/one-hot encoded columns, too! Although it doesn't look as pretty, this has no negative effect on the model. Each 1 and 0 have been replaced with corresponding decimal values, but each binary column still only contains 2 values, meaning the overall information content of each column has not changed.
 
 ## Fitting a KNN Model
 
@@ -772,8 +752,8 @@ test_preds = None #Your code here
 # __SOLUTION__ 
 from sklearn.neighbors import KNeighborsClassifier
 clf1 = KNeighborsClassifier()
-clf1.fit(X_train, y_train)
-test_preds = clf1.predict(X_test)
+clf1.fit(scaled_data_train, y_train)
+test_preds = clf1.predict(scaled_data_test)
 ```
 
 Now, in the cells below, import all the necessary evaluation metrics from `sklearn.metrics` and complete the `print_metrics()` function so that it prints out **_Precision, Recall, Accuracy,_** and **_F1-Score_** when given a set of `labels` (the true values) and `preds` (the models predictions). 
@@ -796,6 +776,12 @@ def print_metrics(labels, preds):
 print_metrics(y_test, test_preds)
 ```
 
+    Precision Score: None
+    Recall Score: None
+    Accuracy Score: None
+    F1 Score: None
+
+
 
 ```python
 # __SOLUTION__ 
@@ -814,10 +800,10 @@ def print_metrics(labels, preds):
 print_metrics(y_test, test_preds)
 ```
 
-    Precision Score: 0.5934065934065934
-    Recall Score: 0.6136363636363636
-    Accuracy Score: 0.6816143497757847
-    F1 Score: 0.6033519553072626
+    Precision Score: 0.675
+    Recall Score: 0.7297297297297297
+    Accuracy Score: 0.7937219730941704
+    F1 Score: 0.7012987012987014
 
 
 > **_Analysis_** Interpret each of the metrics above, and explain what they tell you about your model's capabilities. If you had to pick one score to best describe the performance of the model, which would you choose? Explain your answer.
@@ -862,12 +848,16 @@ def find_best_k(X_train, y_train, X_test, y_test, min_k=1, max_k=25):
 
 
 ```python
-find_best_k(X_train, y_train, X_test, y_test)
+find_best_k(scaled_data_train, y_train, scaled_data_test, y_test)
 # Expected Output:
 
-# Best Value for k: 3
-# F1-Score: 0.6444444444444444
+# Best Value for k: 9
+# F1-Score: 0.7435897435897435
 ```
+
+    Best Value for k: 9
+    F1-Score: 0.7435897435897435
+
 
 
 ```python
@@ -892,15 +882,15 @@ def find_best_k(X_train, y_train, X_test, y_test, min_k=1, max_k=25):
 
 ```python
 # __SOLUTION__ 
-find_best_k(X_train, y_train, X_test, y_test)
+find_best_k(scaled_data_train, y_train, scaled_data_test, y_test)
 # Expected Output:
 
-# Best Value for k: 3
-# F1-Score: 0.6444444444444444
+# Best Value for k: 9
+# F1-Score: 0.7435897435897435
 ```
 
-    Best Value for k: 3
-    F1-Score: 0.6444444444444444
+    Best Value for k: 9
+    F1-Score: 0.7435897435897435
 
 
 If all went well, you'll notice that model performance has improved by over 4 percent by finding an optimal value for k. For further tuning, you can use scikit-learn's built in **Grid Search** to perform a similar exhaustive check of hyper-parameter combinations and fine tune model performance. For a full list of model parameters, see the [sklearn documentation !](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
@@ -911,31 +901,6 @@ As an optional (but recommended!) exercise, think about the decisions you made d
 
 In the cells below, revisit your preprocessing stage and see if you can improve the overall results of the classifier by doing things differently.Consider dropping certain columns, dealing with null values differently, or using an alternative scaling function. Then see how these different preprocessing techniques affect the performance of the model. Remember that the `find_best_k` function handles all of the fitting&mdash;use this to iterate quickly as you try different strategies for dealing with data preprocessing! 
 
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
-
-
-```python
-
-```
 
 
 ```python
